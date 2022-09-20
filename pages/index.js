@@ -1,8 +1,62 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css'
+import { mint } from '../utils/mint';
 
 export default function Home() {
+  const [haveMetamask, sethaveMetamask] = useState(true);
+
+  const [client, setclient] = useState({
+    isConnected: false,
+  });
+
+  const checkConnection = async () => {
+    const { ethereum } = window;
+    if (ethereum) {
+      sethaveMetamask(true);
+      const accounts = await ethereum.request({ method: "eth_accounts" });
+      if (accounts.length > 0) {
+        setclient({
+          isConnected: true,
+          address: accounts[0],
+        });
+      } else {
+        setclient({
+          isConnected: false,
+        });
+      }
+    } else {
+      sethaveMetamask(false);
+    }
+  };
+
+  const connectWeb3 = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        console.log("Metamask not detected");
+        return;
+      }
+
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      setclient({
+        isConnected: true,
+        address: accounts[0],
+      });
+    } catch (error) {
+      console.log("Error connecting to metamask", error);
+    }
+  };
+
+  useEffect(() => {
+    checkConnection();
+  }, []);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,43 +67,33 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a href="https://nextjs.org">NFT HILMAN!</a>
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
+        {client.isConnected ? (
+          <>
+            <button
+              type={"button"}
+              name={"connect_wallet"}
+              className={"btn btn-primary"}
+              onClick={mint}
+            >
+              Mint
+            </button>
+            {client.address.slice(0, 4)}...
+            {client.address.slice(38, 42)}
+          </>
+        ) : (
+          <button
+            type={"button"}
+            name={"connect_wallet"}
+            className={"btn btn-primary"}
+            onClick={connectWeb3}
           >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+            Connect Wallet
+          </button>
+        )}
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
       </main>
 
       <footer className={styles.footer}>
