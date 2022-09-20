@@ -3,7 +3,7 @@ import dimasnft from "../DimasNft.json"
 
 export const mint = async () => {
 
-    const contractAddress = "0x15db7F47ED6699fBCCB02ec70a61273F7dB04d6a";
+    const contractAddress = "0x587fbb08b015C0a6b0a93899d5cD47a3c9a401c0";
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const address = signer.getAddress();
