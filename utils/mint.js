@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import dimasnft from "../DimasNft.json"
+import dimasnft from "../HilmanNgentot.json"
 
 export const mint = async () => {
 
-    const contractAddress = "0x587fbb08b015C0a6b0a93899d5cD47a3c9a401c0";
+    const contractAddress = "0x3512934D093546F471513B55d65aD245417B9057";
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const address = signer.getAddress();
